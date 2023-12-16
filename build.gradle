@@ -1,19 +1,59 @@
 plugins {
     id 'java'
+    id 'org.springframework.boot' version '3.1.3'
+    id 'io.spring.dependency-management' version '1.1.3'
 }
 
-group = 'org.example'
+group = 'sas'
 version = '1.0-SNAPSHOT'
+
+java {
+    sourceCompatibility = '17'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc' // spring boot
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation:3.0.4'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springframework.boot:spring-boot-starter-logging'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+
+    compileOnly 'org.projectlombok:lombok'                                  // lombok
+    annotationProcessor 'org.projectlombok:lombok'
+    implementation 'org.mapstruct:mapstruct:1.5.3.Final'                    // mapstruct
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+
+    runtimeOnly 'org.postgresql:postgresql'                                 // postgresql
+    implementation 'org.postgresql:postgresql:42.6.0'
+    implementation 'javax.servlet:javax.servlet-api:4.0.1'                  // servlet
+
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'                        // jwt
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'            // jaxb(xml)
+    implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7.1'   // jackson(json)
+    implementation 'commons-codec:commons-codec:1.15'                       // binary conversions
+
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'
 }
 
-test {
+tasks.named('test') {
     useJUnitPlatform()
 }
