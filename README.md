@@ -31,9 +31,8 @@ spring.servlet.multipart.max-request-size=32MB
 
 passwordPepper=extraUltraMegaBen10PlasmaUltraSecretPepper
 jwtSecretKey=<<jwt_secret_key, needs to be 128 chars long>>
-ai_model.path=ai_model/
-ai_input.path=src/main/resources/tmp/input/
-ai_output.path=src/main/resources/tmp/output/
+ai_model.path=ai_model/<path/to/dir/>/main.py
+user_data.path=src/main/resources/userData/
 project_root.path=<<project_root_path>>
 ```
 <br>
