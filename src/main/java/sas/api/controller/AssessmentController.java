@@ -18,10 +18,11 @@ public class AssessmentController {
 
     @PostMapping("")
     @SuppressWarnings({"NONE", "CallToPrintStackTrace"})
-    public @ResponseBody ResponseEntity<?> create(@RequestAttribute("actor") User actor,
-                                                  @RequestParam("file") MultipartFile file) {
+    public @ResponseBody ResponseEntity<?> create(
+            @RequestAttribute("actor") User actor, @RequestParam("videoFile") MultipartFile audioFile,
+            @RequestParam("audioFile") MultipartFile videoFile, @RequestParam("wearableDataFile") MultipartFile wearableDataFile) {
         try {
-            AssessmentResultDto assessmentResultDto = assessmentService.create(actor, file);
+            AssessmentResultDto assessmentResultDto = assessmentService.create(actor, audioFile, videoFile, wearableDataFile);
             return new ResponseEntity<>(assessmentResultDto, HttpStatus.OK);
         }
         catch (ServiceException e) {

@@ -1,8 +1,8 @@
 package sas.business.service.assessment;
 
-import com.sun.jdi.InternalException;
 import jakarta.annotation.PostConstruct;
-import org.hibernate.service.spi.ServiceException;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.tomcat.util.http.fileupload.InvalidFileNameException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import sas.business._interface.service.IAssessmentService;
 import sas.business.mapper.assess.result.IAssessmentResultMapper;
+import sas.business.util.python_executor.PythonExecutorUtils;
 import sas.infrastructure.repository.assessment.IAssessmentRepository;
 import sas.model.dto.assessment.AssessmentResultDto;
 import sas.model.dto.assessment.AssessmentResultMetadataDto;
@@ -18,9 +19,10 @@ import sas.model.entity.assessment.result.AssessmentResult;
 import sas.model.entity.assessment.result.AssessmentResultMetadata;
 import sas.model.entity.auth.User;
 
-import java.io.File;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class AssessmentService implements IAssessmentService {
@@ -44,100 +46,39 @@ public class AssessmentService implements IAssessmentService {
     }
 
     @Override
-    public AssessmentResultDto create(User actor, MultipartFile file) {
-        long assessmentId = Instant.now().getEpochSecond();
-        String inputExtension = getFileExtension(file);
-        String inputPath = generateInputPath(assessmentId, inputExtension);
-        String outputPath = generateOutputPath(assessmentId);
+    public AssessmentResultDto create(User actor, MultipartFile audioFile,
+                                      MultipartFile videoFile, MultipartFile wearableDataFile) {
+        long newId = Instant.now().getEpochSecond();
 
-        switch (inputExtension) {
-            case "png":
-                saveFile(file, inputPath);
-                assessByRadu(inputPath, outputPath);
-                break;
-            case "mp3":
-                saveFile(file, inputPath);
-                assessByDiana(inputPath, outputPath);
-                break;
-            case "mp4":
-                saveFile(file, inputPath);
-                assessByRaul(inputPath, outputPath);
-                break;
-            case "waw":
-                saveFile(file, inputPath);
-                assessByLeo(inputPath, outputPath);
-                break;
-            default:
-                throw new ServiceException("Sir, unsupported file extension.");
-        }
+        List<String> inputPaths = saveInputFiles(actor, newId, audioFile, videoFile, wearableDataFile);
+        String outputPath = assessmentRepository.generateEmptyOutputFile(actor, newId);
 
-        AssessmentResult result = assessmentRepository.getOneResult(actor, assessmentId);
+        PythonExecutorUtils.runPython("ai_model/model_radu/main.py", inputPaths, outputPath);
+
+        AssessmentResult result = assessmentRepository.getOneResult(actor, newId);
         return assessmentResultMapper.toDto(result);
     }
 
-    private String generateInputPath(long timestamp, String fileExtension) {
-        File directory = new File(inputDirPath);
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
+    private List<String> saveInputFiles(User actor, Long newId, MultipartFile audioFile,
+                                        MultipartFile videoFile, MultipartFile wearableDataFile) {
+        List<String> inputPaths = new ArrayList<>();
 
-        return inputDirPath + timestamp + "." + fileExtension;
+        saveInputPath(actor, newId, audioFile, inputPaths);
+        saveInputPath(actor, newId, videoFile, inputPaths);
+        saveInputPath(actor, newId, wearableDataFile, inputPaths);
+
+        return inputPaths;
     }
 
-
-    private String generateOutputPath(long timestamp) {
-        File directory = new File(outputDirPath);
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
-
-        return outputDirPath + timestamp + ".json";
-    }
-
-    private String getFileExtension(MultipartFile file) {
-        String fileName = file.getOriginalFilename();
-        if (fileName != null && fileName.lastIndexOf(".") != -1) {
-            return fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
-        } else {
-            return "";
-        }
-    }
-
-    private void saveFile(MultipartFile file, String path) {
-        try {
-            file.transferTo(new File(path));
-        }
-        catch (Exception e) {
-            throw new InternalException(e.getMessage());
-        }
-    }
-
-    private void assessByRadu(String inputFilePath, String outputFilePath) {
-        runPython("ai_model/model_radu/main.py", inputFilePath, outputFilePath);
-    }
-
-    private void assessByDiana(String inputFilePath, String outputFilePath) {
-        runPython("ai_model/model_diana/main.py", inputFilePath, outputFilePath);
-    }
-
-    private void assessByRaul(String inputFilePath, String outputFilePath) {
-        runPython("ai_model/model_raul/main.py", inputFilePath, outputFilePath);
-    }
-
-    private void assessByLeo(String inputFilePath, String outputFilePath) {
-        runPython("ai_model/model_leo/main.py", inputFilePath, outputFilePath);
-    }
-
-    private void runPython(String pythonScriptPath, String inputFilePath, String outputFilePath) {
-        try {
-            ProcessBuilder pb = new ProcessBuilder("python", pythonScriptPath, inputFilePath, outputFilePath);
-            Process p = pb.start();
-            if(p.waitFor() != 0) {
-                throw new Exception("");
+    private void saveInputPath(User actor, Long newId, MultipartFile file, List<String> inputPaths) {
+        if(file != null) {
+            if(!Objects.equals(FilenameUtils.getExtension(file.getOriginalFilename()), "mp3")) {
+                throw new InvalidFileNameException
+                        (file.getOriginalFilename(), "Invalid file extension: not supported as audio file.");
             }
-        }
-        catch (Exception e) {
-            throw new InternalException("Error while running AI model.");
+
+            String filePath = assessmentRepository.saveInputFile(actor, newId, file);
+            inputPaths.add(filePath);
         }
     }
 

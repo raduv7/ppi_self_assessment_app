@@ -9,7 +9,8 @@ import sas.model.entity.auth.User;
 import java.util.List;
 
 public interface IAssessmentService {
-    AssessmentResultDto create(User actor, MultipartFile file);
+    AssessmentResultDto create(User actor, MultipartFile audioFile,
+                               MultipartFile videoFile, MultipartFile wearableDataFile);
     AssessmentResultDto getOneResult(User actor, Long id);
     Resource getOneInputVideo(User actor, Long id);
     List<AssessmentResultMetadataDto> getAllMetadata(User actor);

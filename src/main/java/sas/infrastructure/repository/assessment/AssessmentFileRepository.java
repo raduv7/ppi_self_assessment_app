@@ -3,6 +3,8 @@ package sas.infrastructure.repository.assessment;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.sun.jdi.InternalException;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +12,7 @@ import org.springframework.core.io.Resource;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
 import sas.business.mapper.assess.result.DurationDeserializer;
 import sas.model.entity.assessment.result.AssessmentResult;
 import sas.model.entity.assessment.result.AssessmentResultMetadata;
@@ -32,11 +35,15 @@ public class AssessmentFileRepository implements IAssessmentRepository {
     @Value("${project_root.path}${user_data.path}")
     private String baseDirPath;
 
-    private final ObjectMapper mapper;
+    private final ObjectMapper mapper = new ObjectMapper();
 
-    public AssessmentFileRepository() {
-        mapper = new ObjectMapper();
+    private static final Logger log = LoggerFactory.getLogger(AssessmentFileRepository.class);
+
+
+    @PostConstruct
+    public void postConstruct() {
         registerDurationDeserializer(mapper);
+        ensureDirExists(baseDirPath);
     }
 
     private void registerDurationDeserializer(ObjectMapper mapper) {
@@ -45,7 +52,45 @@ public class AssessmentFileRepository implements IAssessmentRepository {
         mapper.registerModule(module);
     }
 
-    private static final Logger log = LoggerFactory.getLogger(AssessmentFileRepository.class);
+    @Override
+    public String saveInputFile(User actor, Long id, MultipartFile file) {
+        try {
+            String filePathStr = generateInputFilePath(actor, id, file);
+            Path filePath = Paths.get(filePathStr);
+            ensureDirExists(filePath.getParent());
+            file.transferTo(filePath);
+
+            return filePathStr;
+        } catch (IOException e) {
+            log.error(e.toString());
+            throw new InternalException(e.getMessage());
+        }
+    }
+
+    private String generateInputFilePath(User actor, Long id, MultipartFile file) {
+        return baseDirPath + actor.getId() + '/' + id + '/' +
+                "input" + '.' + FilenameUtils.getExtension(file.getOriginalFilename());
+    }
+
+    @Override
+    public String generateEmptyOutputFile(User actor, Long id) {
+        String filePathStr = generateOutputFilePath(actor, id);
+        Path filePath = Paths.get(filePathStr);
+
+        try {
+            ensureDirExists(filePath.getParent());
+            Files.createFile(filePath);
+        } catch (IOException e) {
+            log.error(e.toString());
+            throw new InternalException(e.getMessage());
+        }
+
+        return filePathStr;
+    }
+
+    private String generateOutputFilePath(User actor, Long id) {
+        return baseDirPath + actor.getId() + '/' + id + '/' + "output.json";
+    }
 
     @Override
     public AssessmentResult getOneResult(User actor, Long id) {
@@ -53,13 +98,12 @@ public class AssessmentFileRepository implements IAssessmentRepository {
         Path resultPath = Paths.get(resultPathStr);
 
         try {
-            if(!Files.exists(resultPath) || !Files.isRegularFile(resultPath)) {
+            if (!Files.exists(resultPath) || !Files.isRegularFile(resultPath)) {
                 throw new NoSuchFileException(resultPath.toString());
             }
             return parseAssessmentResult(
                     Files.newBufferedReader(resultPath));
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             log.error(e.toString());
         }
         return null;
@@ -83,13 +127,12 @@ public class AssessmentFileRepository implements IAssessmentRepository {
         Path videoPath = Paths.get(videoPathStr);
 
         try {
-            if(!Files.exists(videoPath) || !Files.isRegularFile(videoPath)) {
+            if (!Files.exists(videoPath) || !Files.isRegularFile(videoPath)) {
                 throw new NoSuchFileException(videoPath.toString());
             }
 
             return new UrlResource(videoPath.toUri());
-        }
-        catch (MalformedURLException | NoSuchFileException e) {
+        } catch (MalformedURLException | NoSuchFileException e) {
             log.error(e.toString());
         }
         return null;
@@ -123,7 +166,7 @@ public class AssessmentFileRepository implements IAssessmentRepository {
 
     private AssessmentResultMetadata getAssessmentResultMetadata(Path assessmentDirPath)
             throws IOException {
-        if(Files.isRegularFile(assessmentDirPath)) {
+        if (Files.isRegularFile(assessmentDirPath)) {
             throw new NotDirectoryException(assessmentDirPath.toString());
         }
 
@@ -149,11 +192,27 @@ public class AssessmentFileRepository implements IAssessmentRepository {
                 case "json" -> hasJson = true;
             }
         }
-        if(!hasJson) {
+        if (!hasJson) {
             throw new NoSuchFileException("No result file found in " + assessmentDirPath.toString());
         }
         Timestamp id = Timestamp.valueOf(assessmentDirPath.getFileName().toString());
 
         return new AssessmentResultMetadata(id, hasAudio, hasVideo, hasWearableData);
+    }
+
+    private static void ensureDirExists(String dirPathStr) {
+        Path dirPath = Paths.get(dirPathStr);
+        ensureDirExists(dirPath);
+    }
+
+    private static void ensureDirExists(Path dirPath) {
+        if (!Files.exists(dirPath)) {
+            try {
+                Files.createDirectory(dirPath);
+            } catch (IOException e) {
+                log.error(e.toString());
+                throw new InternalException(e.getMessage());
+            }
+        }
     }
 }
