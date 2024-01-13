@@ -1,9 +1,9 @@
-package sas.model.dto.assess;
+package sas.model.dto.assessment;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import sas.model.entity.assess.Assessment;
+import sas.model.entity.assessment.Assessment;
 
 @Data
 @NoArgsConstructor

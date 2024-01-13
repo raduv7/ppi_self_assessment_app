@@ -1,4 +1,4 @@
-package sas.model.entity.assess;
+package sas.model.entity.assessment;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

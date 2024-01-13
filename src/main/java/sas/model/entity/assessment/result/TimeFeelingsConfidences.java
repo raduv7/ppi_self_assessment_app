@@ -1,4 +1,4 @@
-package sas.model.entity.assess.result;
+package sas.model.entity.assessment.result;
 
 import lombok.Data;
 
@@ -7,11 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class TimeFeelingConfidence {
+public class TimeFeelingsConfidences {
+    private Integer id;
     private Duration time;
     private final List<FeelingConfidence> feelingConfidenceList;
 
-    public TimeFeelingConfidence(Duration time) {
+    public TimeFeelingsConfidences(Duration time) {
         this.time = time;
         this.feelingConfidenceList = new ArrayList<>();
     }

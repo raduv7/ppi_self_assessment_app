@@ -1,0 +1,332 @@
+[
+    {
+        "time": 0,
+        "feelings_confidence": [
+            {
+                "feeling": "happy",
+                "confidence": 24
+            },
+            {
+                "feeling": "sad",
+                "confidence": 33
+            },
+            {
+                "feeling": "angry",
+                "confidence": 17
+            },
+            {
+                "feeling": "fear",
+                "confidence": 84
+            },
+            {
+                "feeling": "disgust",
+                "confidence": 19
+            },
+            {
+                "feeling": "surprise",
+                "confidence": 33
+            },
+            {
+                "feeling": "neutral",
+                "confidence": 30
+            }
+        ]
+    },
+    {
+        "time": 17,
+        "feelings_confidence": [
+            {
+                "feeling": "happy",
+                "confidence": 23
+            },
+            {
+                "feeling": "sad",
+                "confidence": 50
+            },
+            {
+                "feeling": "angry",
+                "confidence": 12
+            },
+            {
+                "feeling": "fear",
+                "confidence": 79
+            },
+            {
+                "feeling": "disgust",
+                "confidence": 0
+            },
+            {
+                "feeling": "surprise",
+                "confidence": 34
+            },
+            {
+                "feeling": "neutral",
+                "confidence": 3
+            }
+        ]
+    },
+    {
+        "time": 34,
+        "feelings_confidence": [
+            {
+                "feeling": "happy",
+                "confidence": 21
+            },
+            {
+                "feeling": "sad",
+                "confidence": 78
+            },
+            {
+                "feeling": "angry",
+                "confidence": 74
+            },
+            {
+                "feeling": "fear",
+                "confidence": 44
+            },
+            {
+                "feeling": "disgust",
+                "confidence": 36
+            },
+            {
+                "feeling": "surprise",
+                "confidence": 5
+            },
+            {
+                "feeling": "neutral",
+                "confidence": 11
+            }
+        ]
+    },
+    {
+        "time": 51,
+        "feelings_confidence": [
+            {
+                "feeling": "happy",
+                "confidence": 43
+            },
+            {
+                "feeling": "sad",
+                "confidence": 42
+            },
+            {
+                "feeling": "angry",
+                "confidence": 1
+            },
+            {
+                "feeling": "fear",
+                "confidence": 10
+            },
+            {
+                "feeling": "disgust",
+                "confidence": 6
+            },
+            {
+                "feeling": "surprise",
+                "confidence": 41
+            },
+            {
+                "feeling": "neutral",
+                "confidence": 60
+            }
+        ]
+    },
+    {
+        "time": 68,
+        "feelings_confidence": [
+            {
+                "feeling": "happy",
+                "confidence": 51
+            },
+            {
+                "feeling": "sad",
+                "confidence": 25
+            },
+            {
+                "feeling": "angry",
+                "confidence": 0
+            },
+            {
+                "feeling": "fear",
+                "confidence": 64
+            },
+            {
+                "feeling": "disgust",
+                "confidence": 6
+            },
+            {
+                "feeling": "surprise",
+                "confidence": 0
+            },
+            {
+                "feeling": "neutral",
+                "confidence": 38
+            }
+        ]
+    },
+    {
+        "time": 85,
+        "feelings_confidence": [
+            {
+                "feeling": "happy",
+                "confidence": 9
+            },
+            {
+                "feeling": "sad",
+                "confidence": 51
+            },
+            {
+                "feeling": "angry",
+                "confidence": 7
+            },
+            {
+                "feeling": "fear",
+                "confidence": 49
+            },
+            {
+                "feeling": "disgust",
+                "confidence": 40
+            },
+            {
+                "feeling": "surprise",
+                "confidence": 26
+            },
+            {
+                "feeling": "neutral",
+                "confidence": 3
+            }
+        ]
+    },
+    {
+        "time": 102,
+        "feelings_confidence": [
+            {
+                "feeling": "happy",
+                "confidence": 38
+            },
+            {
+                "feeling": "sad",
+                "confidence": 65
+            },
+            {
+                "feeling": "angry",
+                "confidence": 11
+            },
+            {
+                "feeling": "fear",
+                "confidence": 72
+            },
+            {
+                "feeling": "disgust",
+                "confidence": 15
+            },
+            {
+                "feeling": "surprise",
+                "confidence": 13
+            },
+            {
+                "feeling": "neutral",
+                "confidence": 6
+            }
+        ]
+    },
+    {
+        "time": 119,
+        "feelings_confidence": [
+            {
+                "feeling": "happy",
+                "confidence": 70
+            },
+            {
+                "feeling": "sad",
+                "confidence": 45
+            },
+            {
+                "feeling": "angry",
+                "confidence": 16
+            },
+            {
+                "feeling": "fear",
+                "confidence": 3
+            },
+            {
+                "feeling": "disgust",
+                "confidence": 45
+            },
+            {
+                "feeling": "surprise",
+                "confidence": 5
+            },
+            {
+                "feeling": "neutral",
+                "confidence": 73
+            }
+        ]
+    },
+    {
+        "time": 136,
+        "feelings_confidence": [
+            {
+                "feeling": "happy",
+                "confidence": 10
+            },
+            {
+                "feeling": "sad",
+                "confidence": 56
+            },
+            {
+                "feeling": "angry",
+                "confidence": 37
+            },
+            {
+                "feeling": "fear",
+                "confidence": 54
+            },
+            {
+                "feeling": "disgust",
+                "confidence": 28
+            },
+            {
+                "feeling": "surprise",
+                "confidence": 70
+            },
+            {
+                "feeling": "neutral",
+                "confidence": 6
+            }
+        ]
+    },
+    {
+        "time": 153,
+        "feelings_confidence": [
+            {
+                "feeling": "happy",
+                "confidence": 6
+            },
+            {
+                "feeling": "sad",
+                "confidence": 4
+            },
+            {
+                "feeling": "angry",
+                "confidence": 50
+            },
+            {
+                "feeling": "fear",
+                "confidence": 37
+            },
+            {
+                "feeling": "disgust",
+                "confidence": 19
+            },
+            {
+                "feeling": "surprise",
+                "confidence": 39
+            },
+            {
+                "feeling": "neutral",
+                "confidence": 83
+            }
+        ]
+    }
+]

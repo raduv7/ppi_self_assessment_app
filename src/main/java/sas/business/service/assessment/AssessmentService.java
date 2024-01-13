@@ -1,13 +1,17 @@
-package sas.business.service.assess;
+package sas.business.service.assessment;
 
 import com.sun.jdi.InternalException;
 import jakarta.annotation.PostConstruct;
 import org.hibernate.service.spi.ServiceException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import sas.business._interface.service.IAssessmentService;
+import sas.business.mapper.assess.result.AssessmentResultMapper;
+import sas.model.entity.assessment.result.AssessmentResult;
 
+import javax.management.InvalidAttributeValueException;
 import java.io.File;
 import java.time.Instant;
 
@@ -20,6 +24,9 @@ public class AssessmentService implements IAssessmentService {
     @Value("${project_root.path}${ai_output.path}")
     public String outputDirPath;
 
+    @Autowired
+    private AssessmentResultMapper assessmentResultMapper;
+
     @PostConstruct
     private void postConstruct() {
         System.out.println("Assessing absolute input folder path: " + inputDirPath);
@@ -27,7 +34,7 @@ public class AssessmentService implements IAssessmentService {
     }
 
     @Override
-    public String assess(MultipartFile file) {
+    public AssessmentResult assess(MultipartFile file) {
         long timestamp = Instant.now().getEpochSecond();
         String inputExtension = getFileExtension(file);
         String inputPath = generateInputPath(timestamp, inputExtension);
@@ -54,7 +61,11 @@ public class AssessmentService implements IAssessmentService {
                 throw new ServiceException("Sir, unsupported file extension.");
         }
 
-        return outputPath;
+        try {
+            return assessmentResultMapper.parseAssessmentResultFromJsonFile(outputPath);
+        } catch (InvalidAttributeValueException e) {
+            return null;
+        }
     }
 
     private String generateInputPath(long timestamp, String fileExtension) {
@@ -73,7 +84,7 @@ public class AssessmentService implements IAssessmentService {
             directory.mkdirs();
         }
 
-        return outputDirPath + timestamp + ".png";
+        return outputDirPath + timestamp + ".json";
     }
 
     private String getFileExtension(MultipartFile file) {

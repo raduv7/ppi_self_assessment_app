@@ -1,4 +1,4 @@
-package sas.model.entity.assess.result;
+package sas.model.entity.assessment.result;
 
 public enum EFeeling {
     HAPPY,
