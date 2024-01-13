@@ -42,12 +42,21 @@ def write_to_file(file_path, string):
         f.write(string)
 
 
+def log_args_exception():
+    print("Usage: python <path/to/dir/>main.py <nr_of_inputs> <inputs_paths>.. <output_path>")
+    exit(1)
+
+
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print("Usage: python script.py <source_file_path> <destination_file_path>")
-    else:
-        source_path = sys.argv[1]
-        destination_path = sys.argv[2]
-        data = gen_rand_result(FEELINGS, TIME_LENGTH)
-        result_json = parse_to_json(data)
-        write_to_file(destination_path, result_json)
+    if len(sys.argv) < 3:
+        log_args_exception()
+
+    inputsCount = int(sys.argv[1])
+
+    if len(sys.argv) != 3 + inputsCount:
+        log_args_exception()
+
+    destination_path = sys.argv[2 + inputsCount]
+    data = gen_rand_result(FEELINGS, TIME_LENGTH)
+    result_json = parse_to_json(data)
+    write_to_file(destination_path, result_json)

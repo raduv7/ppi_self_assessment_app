@@ -22,7 +22,8 @@ public class AssessmentController {
             @RequestAttribute("actor") User actor, @RequestParam("videoFile") MultipartFile audioFile,
             @RequestParam("audioFile") MultipartFile videoFile, @RequestParam("wearableDataFile") MultipartFile wearableDataFile) {
         try {
-            AssessmentResultDto assessmentResultDto = assessmentService.create(actor, audioFile, videoFile, wearableDataFile);
+            AssessmentResultDto assessmentResultDto = assessmentService.create(actor,
+                    audioFile, videoFile, wearableDataFile);
             return new ResponseEntity<>(assessmentResultDto, HttpStatus.OK);
         }
         catch (ServiceException e) {

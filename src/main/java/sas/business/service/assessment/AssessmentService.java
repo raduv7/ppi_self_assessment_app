@@ -53,7 +53,7 @@ public class AssessmentService implements IAssessmentService {
         List<String> inputPaths = saveInputFiles(actor, newId, audioFile, videoFile, wearableDataFile);
         String outputPath = assessmentRepository.generateEmptyOutputFile(actor, newId);
 
-        PythonExecutorUtils.runPython("ai_model/model_radu/main.py", inputPaths, outputPath);
+        PythonExecutorUtils.runPython(modelDirPath, inputPaths, outputPath);
 
         AssessmentResult result = assessmentRepository.getOneResult(actor, newId);
         return assessmentResultMapper.toDto(result);
