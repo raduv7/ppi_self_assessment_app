@@ -4,7 +4,7 @@ import sas.model.dto.auth.user.UserChangePasswordDto;
 import sas.model.dto.auth.user.UserCreateDto;
 import sas.model.dto.auth.user.UserSignInDto;
 import sas.model.entity.auth.User;
-import sas.model.exception_handling.FirstSignInException;
+import sas.model.exceptionHandling.FirstSignInException;
 
 import javax.naming.AuthenticationException;
 

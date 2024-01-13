@@ -44,6 +44,7 @@ public class AssessmentFileRepository implements IAssessmentFileRepository {
     public void postConstruct() {
         registerDurationDeserializer(mapper);
         ensureDirExists(baseDirPath);
+        log.info("Assessment file repository initialized in ." + baseDirPath);
     }
 
     private void registerDurationDeserializer(ObjectMapper mapper) {

@@ -1,6 +1,5 @@
 package sas.business.service.assessment;
 
-import jakarta.annotation.PostConstruct;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.tomcat.util.http.fileupload.InvalidFileNameException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import sas.business._interface.service.IAssessmentService;
 import sas.business.mapper.assess.result.IAssessmentResultMapper;
-import sas.business.util.python_executor.PythonExecutorUtils;
+import sas.business.util.pythonExecutor.PythonExecutorUtils;
 import sas.infrastructure.repository.assessment.IAssessmentFileRepository;
 import sas.model.dto.assessment.AssessmentResultDto;
 import sas.model.dto.assessment.AssessmentResultMetadataDto;
@@ -28,10 +27,6 @@ import java.util.Objects;
 public class AssessmentService implements IAssessmentService {
     @Value("${ai_model.path}")
     public String modelDirPath;
-    @Value("${project_root.path}${ai_input.path}")
-    public String inputDirPath;
-    @Value("${project_root.path}${ai_output.path}")
-    public String outputDirPath;
 
     @Autowired
     @Qualifier("assessmentFileRepository")
@@ -39,11 +34,6 @@ public class AssessmentService implements IAssessmentService {
     @Autowired
     private IAssessmentResultMapper assessmentResultMapper;
 
-    @PostConstruct
-    private void postConstruct() {
-        System.out.println("Assessing absolute input folder path: " + inputDirPath);
-        System.out.println("Assessing absolute output folder path: " + outputDirPath);
-    }
 
     @Override
     public AssessmentResultDto create(User actor, MultipartFile audioFile,

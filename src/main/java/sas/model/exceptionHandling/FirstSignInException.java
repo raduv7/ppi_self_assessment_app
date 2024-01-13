@@ -1,4 +1,4 @@
-package sas.model.exception_handling;
+package sas.model.exceptionHandling;
 
 import org.hibernate.service.spi.ServiceException;
 
