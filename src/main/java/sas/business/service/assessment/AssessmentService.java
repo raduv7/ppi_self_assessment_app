@@ -15,6 +15,7 @@ import sas.infrastructure.repository.assessment.IAssessmentRepository;
 import sas.model.dto.assessment.AssessmentResultDto;
 import sas.model.dto.assessment.AssessmentResultMetadataDto;
 import sas.model.entity.assessment.result.AssessmentResult;
+import sas.model.entity.assessment.result.AssessmentResultMetadata;
 import sas.model.entity.auth.User;
 
 import java.io.File;
@@ -70,7 +71,7 @@ public class AssessmentService implements IAssessmentService {
                 throw new ServiceException("Sir, unsupported file extension.");
         }
 
-        AssessmentResult result = assessmentRepository.getAssessmentResult(actor, assessmentId);
+        AssessmentResult result = assessmentRepository.getOneResult(actor, assessmentId);
         return assessmentResultMapper.toDto(result);
     }
 
@@ -142,16 +143,18 @@ public class AssessmentService implements IAssessmentService {
 
     @Override
     public AssessmentResultDto getOneResult(User actor, Long id) {
-        return null;
+        AssessmentResult result = assessmentRepository.getOneResult(actor, id);
+        return assessmentResultMapper.toDto(result);
     }
 
     @Override
     public Resource getOneInputVideo(User actor, Long id) {
-        return null;
+        return assessmentRepository.getOneInputVideo(actor, id);
     }
 
     @Override
     public List<AssessmentResultMetadataDto> getAllMetadata(User actor) {
-        return null;
+        List<AssessmentResultMetadata> assessmentResultMetadataList = assessmentRepository.getAllMetadata(actor);
+        return assessmentResultMapper.toDtoList(assessmentResultMetadataList);
     }
 }

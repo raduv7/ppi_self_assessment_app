@@ -48,7 +48,7 @@ public class AssessmentFileRepository implements IAssessmentRepository {
     private static final Logger log = LoggerFactory.getLogger(AssessmentFileRepository.class);
 
     @Override
-    public AssessmentResult getAssessmentResult(User actor, Long id) {
+    public AssessmentResult getOneResult(User actor, Long id) {
         String resultPathStr = baseDirPath + actor.getId() + '/' + id + '/' + "output.json";
         Path resultPath = Paths.get(resultPathStr);
 
@@ -78,7 +78,7 @@ public class AssessmentFileRepository implements IAssessmentRepository {
     }
 
     @Override
-    public Resource getAssessmentInputVideo(User actor, Long id) {
+    public Resource getOneInputVideo(User actor, Long id) {
         String videoPathStr = baseDirPath + actor.getId() + '/' + id + '/' + "input.mp4";
         Path videoPath = Paths.get(videoPathStr);
 
@@ -96,7 +96,7 @@ public class AssessmentFileRepository implements IAssessmentRepository {
     }
 
     @Override
-    public List<AssessmentResultMetadata> getAssessmentResultMetadataList(User actor) {
+    public List<AssessmentResultMetadata> getAllMetadata(User actor) {
         String userDirPathStr = baseDirPath + actor.getId();
         Path userDirPath = Paths.get(userDirPathStr);
 

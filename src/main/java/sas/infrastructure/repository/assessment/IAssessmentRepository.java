@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface IAssessmentRepository {
-    AssessmentResult getAssessmentResult(User actor, Long id);
-    Resource getAssessmentInputVideo(User actor, Long id);
-    List<AssessmentResultMetadata> getAssessmentResultMetadataList(User actor);
+    AssessmentResult getOneResult(User actor, Long id);
+    Resource getOneInputVideo(User actor, Long id);
+    List<AssessmentResultMetadata> getAllMetadata(User actor);
 }
