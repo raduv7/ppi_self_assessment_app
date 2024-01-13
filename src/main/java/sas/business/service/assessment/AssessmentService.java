@@ -10,14 +10,13 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import sas.business._interface.service.IAssessmentService;
-import sas.business.mapper.assess.result.AssessmentResultMapper;
+import sas.business.mapper.assess.result.IAssessmentResultMapper;
 import sas.infrastructure.repository.assessment.IAssessmentRepository;
 import sas.model.dto.assessment.AssessmentResultDto;
 import sas.model.dto.assessment.AssessmentResultMetadataDto;
 import sas.model.entity.assessment.result.AssessmentResult;
 import sas.model.entity.auth.User;
 
-import javax.management.InvalidAttributeValueException;
 import java.io.File;
 import java.time.Instant;
 import java.util.List;
@@ -35,7 +34,7 @@ public class AssessmentService implements IAssessmentService {
     @Qualifier("assessmentFileRepository")
     private IAssessmentRepository assessmentRepository;
     @Autowired
-    private AssessmentResultMapper assessmentResultMapper;
+    private IAssessmentResultMapper assessmentResultMapper;
 
     @PostConstruct
     private void postConstruct() {
@@ -71,12 +70,8 @@ public class AssessmentService implements IAssessmentService {
                 throw new ServiceException("Sir, unsupported file extension.");
         }
 
-        try {
-            AssessmentResult result = assessmentRepository.getAssessmentResult(actor, assessmentId);
-            return assessmentResultMapper.toDto(result);
-        } catch (InvalidAttributeValueException e) {
-            return null;
-        }
+        AssessmentResult result = assessmentRepository.getAssessmentResult(actor, assessmentId);
+        return assessmentResultMapper.toDto(result);
     }
 
     private String generateInputPath(long timestamp, String fileExtension) {
