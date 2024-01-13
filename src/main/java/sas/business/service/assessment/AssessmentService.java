@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import sas.business._interface.service.IAssessmentService;
 import sas.business.mapper.assess.result.IAssessmentResultMapper;
 import sas.business.util.python_executor.PythonExecutorUtils;
-import sas.infrastructure.repository.assessment.IAssessmentRepository;
+import sas.infrastructure.repository.assessment.IAssessmentFileRepository;
 import sas.model.dto.assessment.AssessmentResultDto;
 import sas.model.dto.assessment.AssessmentResultMetadataDto;
 import sas.model.entity.assessment.result.AssessmentResult;
@@ -35,7 +35,7 @@ public class AssessmentService implements IAssessmentService {
 
     @Autowired
     @Qualifier("assessmentFileRepository")
-    private IAssessmentRepository assessmentRepository;
+    private IAssessmentFileRepository assessmentRepository;
     @Autowired
     private IAssessmentResultMapper assessmentResultMapper;
 

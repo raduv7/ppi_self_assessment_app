@@ -1,8 +1,6 @@
 package sas.business.mapper.assess.result;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import sas.model.dto.assessment.AssessmentResultDto;
 import sas.model.dto.assessment.AssessmentResultMetadataDto;
 import sas.model.entity.assessment.result.AssessmentResult;

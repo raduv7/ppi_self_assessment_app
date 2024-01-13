@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Repository
-public class AssessmentFileRepository implements IAssessmentRepository {
+public class AssessmentFileRepository implements IAssessmentFileRepository {
     @Value("${project_root.path}${user_data.path}")
     private String baseDirPath;
 

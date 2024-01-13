@@ -10,7 +10,7 @@ import sas.model.entity.auth.User;
 import java.util.List;
 
 @Repository
-public interface IAssessmentRepository {
+public interface IAssessmentFileRepository {
     String saveInputFile(User actor, Long id, MultipartFile file);
     String generateEmptyOutputFile(User actor, Long id);
     AssessmentResult getOneResult(User actor, Long id);
