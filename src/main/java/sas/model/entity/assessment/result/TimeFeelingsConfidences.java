@@ -1,5 +1,6 @@
 package sas.model.entity.assessment.result;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.Duration;
@@ -7,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@AllArgsConstructor
 public class TimeFeelingsConfidences {
     private Integer id;
     private Duration time;

@@ -10,5 +10,8 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AssessmentResultMetadata {
-    private Timestamp timestamp;
+    private Timestamp id;
+    private Boolean hasAudio;
+    private Boolean hasVideo;
+    private Boolean hasWearableData;
 }

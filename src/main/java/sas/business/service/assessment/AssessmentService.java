@@ -4,16 +4,23 @@ import com.sun.jdi.InternalException;
 import jakarta.annotation.PostConstruct;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import sas.business._interface.service.IAssessmentService;
 import sas.business.mapper.assess.result.AssessmentResultMapper;
+import sas.infrastructure.repository.assessment.IAssessmentRepository;
+import sas.model.dto.assessment.AssessmentResultDto;
+import sas.model.dto.assessment.AssessmentResultMetadataDto;
 import sas.model.entity.assessment.result.AssessmentResult;
+import sas.model.entity.auth.User;
 
 import javax.management.InvalidAttributeValueException;
 import java.io.File;
 import java.time.Instant;
+import java.util.List;
 
 @Service
 public class AssessmentService implements IAssessmentService {
@@ -25,6 +32,9 @@ public class AssessmentService implements IAssessmentService {
     public String outputDirPath;
 
     @Autowired
+    @Qualifier("assessmentFileRepository")
+    private IAssessmentRepository assessmentRepository;
+    @Autowired
     private AssessmentResultMapper assessmentResultMapper;
 
     @PostConstruct
@@ -34,11 +44,11 @@ public class AssessmentService implements IAssessmentService {
     }
 
     @Override
-    public AssessmentResult assess(MultipartFile file) {
-        long timestamp = Instant.now().getEpochSecond();
+    public AssessmentResultDto create(User actor, MultipartFile file) {
+        long assessmentId = Instant.now().getEpochSecond();
         String inputExtension = getFileExtension(file);
-        String inputPath = generateInputPath(timestamp, inputExtension);
-        String outputPath = generateOutputPath(timestamp);
+        String inputPath = generateInputPath(assessmentId, inputExtension);
+        String outputPath = generateOutputPath(assessmentId);
 
         switch (inputExtension) {
             case "png":
@@ -62,7 +72,8 @@ public class AssessmentService implements IAssessmentService {
         }
 
         try {
-            return assessmentResultMapper.parseAssessmentResultFromJsonFile(outputPath);
+            AssessmentResult result = assessmentRepository.getAssessmentResult(actor, assessmentId);
+            return assessmentResultMapper.toDto(result);
         } catch (InvalidAttributeValueException e) {
             return null;
         }
@@ -132,5 +143,20 @@ public class AssessmentService implements IAssessmentService {
         catch (Exception e) {
             throw new InternalException("Error while running AI model.");
         }
+    }
+
+    @Override
+    public AssessmentResultDto getOneResult(User actor, Long id) {
+        return null;
+    }
+
+    @Override
+    public Resource getOneInputVideo(User actor, Long id) {
+        return null;
+    }
+
+    @Override
+    public List<AssessmentResultMetadataDto> getAllMetadata(User actor) {
+        return null;
     }
 }
