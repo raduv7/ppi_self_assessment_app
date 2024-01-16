@@ -5,6 +5,7 @@ import lombok.*;
 import java.security.InvalidParameterException;
 
 @Data
+@NoArgsConstructor
 public class FeelingConfidence {
     private EFeeling feeling;
     private Integer confidence;
@@ -12,6 +13,10 @@ public class FeelingConfidence {
     public FeelingConfidence(EFeeling feeling, Integer confidence) {
         this.feeling = feeling;
         this.setConfidence(confidence);
+    }
+
+    public void setFeeling(String feelingStr) {
+        this.feeling = EFeeling.valueOf(feelingStr.toUpperCase());
     }
 
     public void setConfidence(Integer confidence) {

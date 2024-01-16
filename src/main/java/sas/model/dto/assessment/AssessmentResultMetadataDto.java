@@ -6,8 +6,13 @@ import java.sql.Timestamp;
 
 @Data
 public class AssessmentResultMetadataDto {
-    private Timestamp timestamp;
+    private Timestamp id;
     private Boolean hasAudio;
     private Boolean hasVideo;
     private Boolean hasWearableData;
+
+    @SuppressWarnings("unused")
+    public Long getTimestamp() {
+        return id.getTime();
+    }
 }

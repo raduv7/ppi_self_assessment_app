@@ -25,9 +25,11 @@ import java.net.MalformedURLException;
 import java.nio.file.*;
 import java.sql.Timestamp;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Repository
@@ -43,7 +45,7 @@ public class AssessmentFileRepository implements IAssessmentFileRepository {
     @PostConstruct
     public void postConstruct() {
         registerDurationDeserializer(mapper);
-        ensureDirExists(baseDirPath);
+        ensureDirsExists(baseDirPath);
         log.info("Assessment file repository initialized in ." + baseDirPath);
     }
 
@@ -58,7 +60,7 @@ public class AssessmentFileRepository implements IAssessmentFileRepository {
         try {
             String filePathStr = generateInputFilePath(actor, id, file);
             Path filePath = Paths.get(filePathStr);
-            ensureDirExists(filePath.getParent());
+            ensureDirsExists(filePath.getParent());
             file.transferTo(filePath);
 
             return filePathStr;
@@ -79,7 +81,7 @@ public class AssessmentFileRepository implements IAssessmentFileRepository {
         Path filePath = Paths.get(filePathStr);
 
         try {
-            ensureDirExists(filePath.getParent());
+            ensureDirsExists(filePath.getParent());
             Files.createFile(filePath);
         } catch (IOException e) {
             log.error(e.toString());
@@ -113,8 +115,8 @@ public class AssessmentFileRepository implements IAssessmentFileRepository {
     private AssessmentResult parseAssessmentResult(BufferedReader reader)
             throws IOException {
         List<TimeFeelingsConfidences> list = mapper.readValue(reader,
-                new TypeReference<>() {
-                });
+                new TypeReference<>(){}
+        );
         AssessmentResult result = new AssessmentResult();
         for (TimeFeelingsConfidences item : list) {
             result.addTimeFeelingConfidence(item);
@@ -145,19 +147,17 @@ public class AssessmentFileRepository implements IAssessmentFileRepository {
         Path userDirPath = Paths.get(userDirPathStr);
 
         try (Stream<Path> dirStream = Files.list(userDirPath)) {
-            return dirStream.reduce(new ArrayList<>(),
-                    (list, path) -> {
-                        try {
-                            list.add(getAssessmentResultMetadata(path));
-                        } catch (IOException e) {
-                            log.error(Arrays.toString(e.getStackTrace()));
-                        }
-                        return list;
-                    },
-                    (list1, list2) -> {
-                        list1.addAll(list2);
-                        return list1;
-                    });
+            return dirStream.map(
+                    (path) -> {
+                            try {
+                                return getAssessmentResultMetadata(path);
+                            } catch (IOException e) {
+                                log.error(e.toString());
+                                return null;
+                            }
+                        })
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
         } catch (IOException | DirectoryIteratorException | NumberFormatException e) {
             log.error(e.toString());
         }
@@ -196,20 +196,22 @@ public class AssessmentFileRepository implements IAssessmentFileRepository {
         if (!hasJson) {
             throw new NoSuchFileException("No result file found in " + assessmentDirPath.toString());
         }
-        Timestamp id = Timestamp.valueOf(assessmentDirPath.getFileName().toString());
+
+        long timestampLong = Long.parseLong(assessmentDirPath.getFileName().toString());
+        Timestamp id = Timestamp.from(Instant.ofEpochMilli(timestampLong));
 
         return new AssessmentResultMetadata(id, hasAudio, hasVideo, hasWearableData);
     }
 
-    private static void ensureDirExists(String dirPathStr) {
+    private static void ensureDirsExists(String dirPathStr) {
         Path dirPath = Paths.get(dirPathStr);
-        ensureDirExists(dirPath);
+        ensureDirsExists(dirPath);
     }
 
-    private static void ensureDirExists(Path dirPath) {
+    private static void ensureDirsExists(Path dirPath) {
         if (!Files.exists(dirPath)) {
             try {
-                Files.createDirectory(dirPath);
+                Files.createDirectories(dirPath);
             } catch (IOException e) {
                 log.error(e.toString());
                 throw new InternalException(e.getMessage());

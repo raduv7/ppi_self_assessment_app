@@ -65,7 +65,7 @@ public class AssessmentService implements IAssessmentService {
 
     private void saveInputPath(User actor, Long newId, MultipartFile file, List<String> inputPaths, List<String> allowedExtensions) {
         if(file != null) {
-            if(allowedExtensions.contains(FilenameUtils.getExtension(file.getOriginalFilename()))) {
+            if(!allowedExtensions.contains(FilenameUtils.getExtension(file.getOriginalFilename()))) {
                 throw new InvalidFileNameException
                         (file.getOriginalFilename(), "Invalid file extension: not supported as audio file.");
             }
