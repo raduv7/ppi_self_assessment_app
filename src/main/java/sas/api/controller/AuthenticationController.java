@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth_management")
+@RequestMapping("/authentication_management")
 @CrossOrigin(origins = "*")
 public class AuthenticationController {
     @Autowired private IAuthenticationService authenticationService;

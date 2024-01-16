@@ -105,7 +105,7 @@ public class AssessmentFileRepository implements IAssessmentFileRepository {
             return parseAssessmentResult(
                     Files.newBufferedReader(resultPath));
         } catch (IOException e) {
-            log.error(e.toString());
+            log.error(e.toString(), (Object[]) e.getStackTrace());
         }
         return null;
     }
@@ -134,7 +134,7 @@ public class AssessmentFileRepository implements IAssessmentFileRepository {
 
             return new UrlResource(videoPath.toUri());
         } catch (MalformedURLException | NoSuchFileException e) {
-            log.error(e.toString());
+            log.error(e.toString(), (Object[]) e.getStackTrace());
         }
         return null;
     }

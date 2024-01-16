@@ -18,10 +18,10 @@ import sas.model.entity.assessment.result.AssessmentResult;
 import sas.model.entity.assessment.result.AssessmentResultMetadata;
 import sas.model.entity.auth.User;
 
+import java.security.InvalidParameterException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class AssessmentService implements IAssessmentService {
@@ -53,16 +53,19 @@ public class AssessmentService implements IAssessmentService {
                                         MultipartFile videoFile, MultipartFile wearableDataFile) {
         List<String> inputPaths = new ArrayList<>();
 
-        saveInputPath(actor, newId, audioFile, inputPaths);
-        saveInputPath(actor, newId, videoFile, inputPaths);
-        saveInputPath(actor, newId, wearableDataFile, inputPaths);
+        saveInputPath(actor, newId, audioFile, inputPaths, List.of("mp4"));
+        saveInputPath(actor, newId, videoFile, inputPaths, List.of("mp3"));
+        saveInputPath(actor, newId, wearableDataFile, inputPaths, List.of("csv"));
+
+        if (inputPaths.isEmpty())
+            throw new InvalidParameterException("No input files provided.");
 
         return inputPaths;
     }
 
-    private void saveInputPath(User actor, Long newId, MultipartFile file, List<String> inputPaths) {
+    private void saveInputPath(User actor, Long newId, MultipartFile file, List<String> inputPaths, List<String> allowedExtensions) {
         if(file != null) {
-            if(!Objects.equals(FilenameUtils.getExtension(file.getOriginalFilename()), "mp3")) {
+            if(allowedExtensions.contains(FilenameUtils.getExtension(file.getOriginalFilename()))) {
                 throw new InvalidFileNameException
                         (file.getOriginalFilename(), "Invalid file extension: not supported as audio file.");
             }

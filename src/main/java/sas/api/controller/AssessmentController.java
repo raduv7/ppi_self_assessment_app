@@ -17,26 +17,27 @@ public class AssessmentController {
     @Autowired private IAssessmentService assessmentService;
 
     @PostMapping("")
-    @SuppressWarnings({"NONE", "CallToPrintStackTrace"})
+    @SuppressWarnings("NONE")
     public @ResponseBody ResponseEntity<?> create(
-            @RequestAttribute("actor") User actor, @RequestParam("videoFile") MultipartFile audioFile,
-            @RequestParam("audioFile") MultipartFile videoFile, @RequestParam("wearableDataFile") MultipartFile wearableDataFile) {
+            @RequestAttribute("actor") User actor,
+            @RequestParam(name = "videoFile", required = false) MultipartFile audioFile,
+            @RequestParam(name = "audioFile", required = false) MultipartFile videoFile,
+            @RequestParam(name = "wearableDataFile", required = false) MultipartFile wearableDataFile) {
         try {
             AssessmentResultDto assessmentResultDto = assessmentService.create(actor,
                     audioFile, videoFile, wearableDataFile);
             return new ResponseEntity<>(assessmentResultDto, HttpStatus.OK);
         }
         catch (ServiceException e) {
-            e.printStackTrace();
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         catch (Exception e) {
-            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping("/{id}/inputs/video")
+    @SuppressWarnings("NONE")
     public @ResponseBody ResponseEntity<?> getOneInputVideo(@RequestAttribute("actor") User actor,
                                                              @PathVariable("id") Long id) {
         try {
@@ -51,6 +52,7 @@ public class AssessmentController {
     }
 
     @GetMapping("/{id}/result")
+    @SuppressWarnings("NONE")
     public @ResponseBody ResponseEntity<?> getOneResult(@RequestAttribute("actor") User actor,
                                                 @PathVariable("id") Long id) {
         try {
@@ -63,10 +65,10 @@ public class AssessmentController {
         catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
-    @GetMapping
+    @GetMapping("")
+    @SuppressWarnings("NONE")
     public @ResponseBody ResponseEntity<?> getAll(@RequestAttribute("actor") User actor) {
         try {
             return new ResponseEntity<>(assessmentService.getAllMetadata(actor), HttpStatus.OK);
