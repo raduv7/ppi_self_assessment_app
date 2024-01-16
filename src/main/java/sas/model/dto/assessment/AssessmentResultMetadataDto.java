@@ -12,7 +12,7 @@ public class AssessmentResultMetadataDto {
     private Boolean hasWearableData;
 
     @SuppressWarnings("unused")
-    public Long getTimestamp() {
-        return id.getTime();
+    public long getTimestamp() {
+        return id.toInstant().getEpochSecond();
     }
 }

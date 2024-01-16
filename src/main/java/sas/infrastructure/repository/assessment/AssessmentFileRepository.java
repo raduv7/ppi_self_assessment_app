@@ -198,7 +198,7 @@ public class AssessmentFileRepository implements IAssessmentFileRepository {
         }
 
         long timestampLong = Long.parseLong(assessmentDirPath.getFileName().toString());
-        Timestamp id = Timestamp.from(Instant.ofEpochMilli(timestampLong));
+        Timestamp id = Timestamp.from(Instant.ofEpochSecond(timestampLong));
 
         return new AssessmentResultMetadata(id, hasAudio, hasVideo, hasWearableData);
     }

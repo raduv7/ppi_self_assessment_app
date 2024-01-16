@@ -21,6 +21,7 @@ import sas.model.entity.auth.User;
 import java.security.InvalidParameterException;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -32,6 +33,7 @@ public class AssessmentService implements IAssessmentService {
     @Qualifier("assessmentFileRepository")
     private IAssessmentFileRepository assessmentRepository;
     @Autowired
+    @Qualifier("assessmentResultMapperExtendedImpl")
     private IAssessmentResultMapper assessmentResultMapper;
 
 
@@ -89,6 +91,7 @@ public class AssessmentService implements IAssessmentService {
     @Override
     public List<AssessmentResultMetadataDto> getAllMetadata(User actor) {
         List<AssessmentResultMetadata> assessmentResultMetadataList = assessmentRepository.getAllMetadata(actor);
+        assessmentResultMetadataList.sort(Comparator.comparing(AssessmentResultMetadata::getId));
         return assessmentResultMapper.toDtoList(assessmentResultMetadataList);
     }
 }
