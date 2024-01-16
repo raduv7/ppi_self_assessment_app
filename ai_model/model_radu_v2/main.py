@@ -1,3 +1,4 @@
+import shutil
 import sys
 import json
 import random
@@ -8,14 +9,14 @@ FEELINGS = ["happy", "sad", "angry", "fear", "disgust", "surprise", "neutral"]
 TIME_LENGTH = 10
 
 
-# def copy_file(source, destination):
-#     try:
-#         shutil.copy(source, destination)
-#         print(f"File copied successfully from {source} to {destination}")
-#     except IOError as e:
-#         print(f"Unable to copy file. {e}")
-#     except:
-#         print("Unexpected error:", sys.exc_info())
+def copy_file(source, destination):
+    try:
+        shutil.copy(source, destination)
+        print(f"File copied successfully from {source} to {destination}")
+    except IOError as e:
+        print(f"Unable to copy file. {e}")
+    except:
+        print("Unexpected error:", sys.exc_info())
 
 
 def generate_confidence():
@@ -57,6 +58,8 @@ if __name__ == "__main__":
         log_args_exception()
 
     destination_path = sys.argv[2 + inputsCount]
-    data = gen_rand_result(FEELINGS, TIME_LENGTH)
-    result_json = parse_to_json(data)
-    write_to_file(destination_path, result_json)
+    # data = gen_rand_result(FEELINGS, TIME_LENGTH)
+    # result_json = parse_to_json(data)
+    # write_to_file(destination_path, result_json)
+    copy_file("/Users/raduandreivaida/workspace/java/univ/ppi/self_assessment_app/src/main/resources/userData/4/1705424993/output.json",
+              destination_path)
