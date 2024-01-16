@@ -105,19 +105,20 @@ public class AssessmentFileRepository implements IAssessmentFileRepository {
                 throw new NoSuchFileException(resultPath.toString());
             }
             return parseAssessmentResult(
-                    Files.newBufferedReader(resultPath));
+                    Files.newBufferedReader(resultPath), id);
         } catch (IOException e) {
             log.error(e.toString(), (Object[]) e.getStackTrace());
         }
         return null;
     }
 
-    private AssessmentResult parseAssessmentResult(BufferedReader reader)
+    private AssessmentResult parseAssessmentResult(BufferedReader reader, long id)
             throws IOException {
         List<TimeFeelingsConfidences> list = mapper.readValue(reader,
                 new TypeReference<>(){}
         );
         AssessmentResult result = new AssessmentResult();
+        result.setId(Timestamp.from(Instant.ofEpochSecond(id)));
         for (TimeFeelingsConfidences item : list) {
             result.addTimeFeelingConfidence(item);
         }

@@ -18,9 +18,9 @@ import java.util.stream.Collectors;
 @Component
 public class AssessmentResultMapperExtendedImpl extends IAssessmentResultMapperImpl {
     @Override
-    public AssessmentResultDto toDto(AssessmentResult assessmentResult) {
+    public AssessmentResultDto toDto(AssessmentResult entity) {
         Map<EFeeling, List<AssessmentResultFeelingConfidenceTimestamp>> map =
-                assessmentResult.getTimeFeelingsConfidencesList()
+                entity.getTimeFeelingsConfidencesList()
                         .stream()
                         .flatMap(timeFeelingsConfidences ->
                                 timeFeelingsConfidences.getFeelingConfidenceList()
@@ -35,7 +35,7 @@ public class AssessmentResultMapperExtendedImpl extends IAssessmentResultMapperI
                         )
                         .collect(Collectors.groupingBy(AssessmentResultFeelingConfidenceTimestamp::getFeeling));
 
-        return map.entrySet()
+        AssessmentResultDto dto = map.entrySet()
                 .stream()
                 .map((entry) ->
                         new AssessmentResultFeelingDto(
@@ -58,6 +58,10 @@ public class AssessmentResultMapperExtendedImpl extends IAssessmentResultMapperI
                             return assessmentResultDto1;
                         }
                 );
+
+        dto.setId(entity.getId());
+
+        return dto;
     }
 
     private AssessmentResultFeelingDataPointDto toAssessmentResultFeelingDataPointDto
